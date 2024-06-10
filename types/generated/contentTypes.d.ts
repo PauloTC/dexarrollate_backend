@@ -362,6 +362,46 @@ export interface AdminTransferTokenPermission extends Schema.CollectionType {
   };
 }
 
+export interface ApiDocumentDocument extends Schema.CollectionType {
+  collectionName: 'documents';
+  info: {
+    singularName: 'document';
+    pluralName: 'documents';
+    displayName: 'Document';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    file: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    title: Attribute.String;
+    type: Attribute.Enumeration<['manual', 'calendario', 'indice']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'manual'>;
+    resources: Attribute.Relation<
+      'api::document.document',
+      'manyToMany',
+      'api::resource.resource'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::document.document',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::document.document',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiInicioInicio extends Schema.SingleType {
   collectionName: 'inicios';
   info: {
@@ -386,6 +426,46 @@ export interface ApiInicioInicio extends Schema.SingleType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::inicio.inicio',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiResourceResource extends Schema.CollectionType {
+  collectionName: 'resources';
+  info: {
+    singularName: 'resource';
+    pluralName: 'resources';
+    displayName: 'Resource';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Attribute.String;
+    subtitle: Attribute.String;
+    position: Attribute.Enumeration<
+      ['vendedor', 'supervisor', 'administrador']
+    >;
+    documents: Attribute.Relation<
+      'api::resource.resource',
+      'manyToMany',
+      'api::document.document'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::resource.resource',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::resource.resource',
       'oneToOne',
       'admin::user'
     > &
@@ -835,7 +915,9 @@ declare module '@strapi/types' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
+      'api::document.document': ApiDocumentDocument;
       'api::inicio.inicio': ApiInicioInicio;
+      'api::resource.resource': ApiResourceResource;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
