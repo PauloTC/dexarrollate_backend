@@ -1,9 +1,24 @@
 const path = require("path");
 
 module.exports = ({ env }) => {
-  const client = env("DATABASE_CLIENT", "postgres");
+  const client = env("DATABASE_CLIENT", "default");
 
   const connections = {
+    default: {
+      connector: "mongoose",
+      settings: {
+        host: env("DATABASE_HOST", "localhost"),
+        srv: env.bool("DATABASE_SRV", false),
+        port: env.int("DATABASE_PORT", 27017),
+        database: env("DATABASE_NAME", "strapi"),
+        username: env("DATABASE_USERNAME", ""),
+        password: env("DATABASE_PASSWORD", ""),
+      },
+      options: {
+        authenticationDatabase: env("AUTHENTICATION_DATABASE", null),
+        ssl: env.bool("DATABASE_SSL", false),
+      },
+    },
     mysql: {
       connection: {
         connectionString: env("DATABASE_URL"),
